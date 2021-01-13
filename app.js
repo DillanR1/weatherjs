@@ -1,37 +1,26 @@
-// Init storage
-const storage = new Storage();
-// Get stored location data
-const weatherLocation = storage.getLocationData();
-// Init weather object
-const weather = new Weather(weatherLocation.city, weatherLocation.state);
-// Init UI
+//inst classes//
+
+const ft = new Fetch();
 const ui = new UI();
 
-// Get weather on DOM load
-document.addEventListener('DOMContentLoaded', getWeather);
+//add event listeners//
 
-// Change location event
-document.getElementById('w-change-btn').addEventListener('click', (e) => {
-  const city = document.getElementById('city').value;
-  const state = document.getElementById('state').value;
+const search = document.getElementById("searchUser");
+const button = document.getElementById("submit");
+button.addEventListener("click", () => {
+  const currentVal = search.value;
 
-  // Change location
-  weather.changeLocation(city, state);
-
-  // Set location in LS
-  storage.setLocationData(city, state);
-
-  // Get and display weather
-  getWeather();
-
-  // Close modal
-  $('#locModal').modal('hide');
+  ft.getCurrent(currentVal).then((data) => {
+    //call a UI method//
+    ui.populateUI(data);
+    //call saveToLS
+    ui.saveToLS(data);
+  });
 });
 
-function getWeather(){
-  weather.getWeather()
-    .then(results => {
-      ui.paint(results);
-    })
-    .catch(err => console.log(err));
-}
+//event listener for local storage
+
+window.addEventListener("DOMContentLoaded", () => {
+  const dataSaved = ui.getFromLS();
+  ui.populateUI(dataSaved);
+});

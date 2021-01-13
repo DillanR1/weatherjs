@@ -1,24 +1,49 @@
 class UI {
   constructor() {
-    this.location = document.getElementById('w-location');
-    this.desc = document.getElementById('w-desc');
-    this.string = document.getElementById('w-string');
-    this.details = document.getElementById('w-details');
-    this.icon = document.getElementById('w-icon');
-    this.humidity = document.getElementById('w-humidity');
-    this.feelsLike = document.getElementById('w-feels-like');
-    //this.dewpoint= document.getElementById('w-dewpoint');
-    this.wind = document.getElementById('w-wind');
+    this.uiContainer = document.getElementById("content");
+    this.city;
+    this.defaultCity = "London";
   }
 
-  paint(weather) {
-    this.location.textContent = weather.name;
-    this.desc.textContent = weather.description;
-    this.string.textContent = weather.temp;
-    this.icon.setAttribute('src', weather.icon);
-    this.humidity.textContent = `Relative Humidity: ${weather.humidity}`;
-    this.feelsLike.textContent = `Feels Like: ${weather.feels_like}`;
-    //this.dewpoint.textContent = `DewPoint: ${weather.dewpoint_string}`;
-    this.wind.textContent = `Wind: ${weather.speed}`;
+  populateUI(data) {
+    //de-structure vars
+
+    //add them to inner HTML
+
+    this.uiContainer.innerHTML = `
+        
+        <div class="card mx-auto mt-5" style="width: 18rem;">
+            <div class="card-body justify-content-center">
+                <h5 class="card-title">${data.name}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Highs of ${data.main.temp_max}. Lows of ${data.main.temp_min}</h6>
+                <p class="card-text ">Weather conditions are described as: ${data.weather[0].description}</p>
+                
+            </div>
+        </div>
+        
+        
+        `;
+  }
+
+  clearUI() {
+    uiContainer.innerHTML = "";
+  }
+
+  saveToLS(data) {
+    localStorage.setItem("city", JSON.stringify(data));
+  }
+
+  getFromLS() {
+    if (localStorage.getItem("city" == null)) {
+      return this.defaultCity;
+    } else {
+      this.city = JSON.parse(localStorage.getItem("city"));
+    }
+
+    return this.city;
+  }
+
+  clearLS() {
+    localStorage.clear();
   }
 }
